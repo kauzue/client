@@ -1,15 +1,17 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "function.h"
 #define PORT_NUM    4523
 #define MAX_MSG_LEN 256
-//#define SERVER_IP   "192.168.0.2" 辑滚 IP 林家
+#define SERVER_IP "192.168.0.31"   //"192.168.0.2" 辑滚 IP 林家
 int main()
 {
     WSADATA wsadata;
     WSAStartup(MAKEWORD(2, 2), &wsadata);//扩加 檬扁拳	
     
-    char server_ip[40] = "";
-    printf("辑滚 IP:");
-    gets_s(server_ip, sizeof(server_ip));
+    //char server_ip[40] = "";
+    //printf("辑滚 IP:");
+    //gets_s(server_ip, sizeof(server_ip));
 
     SOCKET sock;
     sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);//家南 积己
@@ -19,7 +21,7 @@ int main()
 
     SOCKADDR_IN servaddr = { 0 };//家南 林家
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr(server_ip);
+    servaddr.sin_addr.s_addr = inet_addr(SERVER_IP);
     servaddr.sin_port = htons(PORT_NUM);
 
     int re = 0;
@@ -32,8 +34,9 @@ int main()
 
     char msg[MAX_MSG_LEN] = "";
     while (true) {
-        gets_s(msg, MAX_MSG_LEN);
-        send(sock, msg, sizeof(msg), 0);//价脚
+        scanf("%s", msg);
+        //gets_s(msg, MAX_MSG_LEN);
+        send(sock, msg, strlen(msg), 0);//价脚
         if (strcmp(msg, "exit") == 0) {
             break;
         }
@@ -49,7 +52,7 @@ void RecvThreadPoint(void* pin)
     SOCKET sock = (SOCKET)pin;
     char msg[MAX_MSG_LEN];
     while (recv(sock, msg, MAX_MSG_LEN, 0)) {
-        printf("%s \n", msg);
+        printf("%s", msg);
     }
     closesocket(sock);
 }
