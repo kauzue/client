@@ -3,7 +3,7 @@
 #include "function.h"
 #define PORT_NUM    4523
 #define MAX_MSG_LEN 256
-#define SERVER_IP "192.168.0.31"   //"192.168.0.2" 辑滚 IP 林家
+#define SERVER_IP "175.121.169.6"   //"175.121.169.6" 辑滚 IP 林家
 int main()
 {
     WSADATA wsadata;
@@ -34,8 +34,8 @@ int main()
 
     char msg[MAX_MSG_LEN] = "";
     while (true) {
-        scanf("%s", msg);
-        //gets_s(msg, MAX_MSG_LEN);
+        //scanf("%s", msg);
+        gets_s(msg, MAX_MSG_LEN);
         send(sock, msg, strlen(msg), 0);//价脚
         if (strcmp(msg, "exit") == 0) {
             break;
@@ -51,8 +51,22 @@ void RecvThreadPoint(void* pin)
 {
     SOCKET sock = (SOCKET)pin;
     char msg[MAX_MSG_LEN];
+    int result;
+
     while (recv(sock, msg, MAX_MSG_LEN, 0)) {
         printf("%s", msg);
+
+        result = strcmp(msg, "cls");
+
+        if (result == 0) {
+            system("cls");
+        }
+
+        result = strcmp(msg, "wait");
+
+        if (result == 0) {
+            getchar();
+        }
     }
     closesocket(sock);
 }
