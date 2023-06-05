@@ -1,9 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "function.h"
-#define PORT_NUM    4523
+#define PORT_NUM    1252
 #define MAX_MSG_LEN 256
-#define SERVER_IP "39.113.172.74"   //"175.121.169.6" 辑滚 IP 林家
+#define SERVER_IP "192.168.55.101"   //"192.168.55.101" 辑滚 IP 林家
 int main()
 {
     WSADATA wsadata;
