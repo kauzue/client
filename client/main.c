@@ -4,6 +4,8 @@
 #define PORT_NUM    1252
 #define MAX_MSG_LEN 256
 #define SERVER_IP "192.168.55.101"   //"192.168.55.101" 서버 IP 주소
+int exit = 0;
+
 int main()
 {
     WSADATA wsadata;
@@ -33,7 +35,7 @@ int main()
     _beginthread(RecvThreadPoint, 0, (void*)sock);
 
     char msg[MAX_MSG_LEN] = "";
-    while (true) {
+    while (!exit) {
         //scanf("%s", msg);
         gets_s(msg, MAX_MSG_LEN);
         send(sock, msg, strlen(msg), 0);//송신
@@ -56,10 +58,12 @@ void RecvThreadPoint(void* pin)
     while (recv(sock, msg, MAX_MSG_LEN, 0)) {
         printf("%s", msg);
 
-        result = strcmp(msg, "cls");
-
-        if (result == 0) {
+        if (srtcmp(msg, "cls") == 0) {
             system("cls");
+        }
+
+        if (strcmp(msg, "exit") == 0) {
+            exit = 1;
         }
     }
     closesocket(sock);
