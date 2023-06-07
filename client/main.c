@@ -3,29 +3,29 @@
 #include "function.h"
 #define PORT_NUM    1252
 #define MAX_MSG_LEN 256
-#define SERVER_IP "192.168.55.101"   //"192.168.55.101" ¼­¹ö IP ÁÖ¼Ò
+#define SERVER_IP "192.168.55.101"   //"192.168.55.101" ì„œë²„ IP ì£¼ì†Œ
 int main()
 {
     WSADATA wsadata;
-    WSAStartup(MAKEWORD(2, 2), &wsadata);//À©¼Ó ÃÊ±âÈ­
+    WSAStartup(MAKEWORD(2, 2), &wsadata);//ìœˆì† ì´ˆê¸°í™”
     
     //char server_ip[40] = "";
-    //printf("¼­¹ö IP:");
+    //printf("ì„œë²„ IP:");
     //gets_s(server_ip, sizeof(server_ip));
 
     SOCKET sock;
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);//¼ÒÄÏ »ı¼º
+    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);//ì†Œì¼“ ìƒì„±
     if (sock == -1) {
         return -1;
     }
 
-    SOCKADDR_IN servaddr = { 0 };//¼ÒÄÏ ÁÖ¼Ò
+    SOCKADDR_IN servaddr = { 0 };//ì†Œì¼“ ì£¼ì†Œ
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = inet_addr(SERVER_IP);
     servaddr.sin_port = htons(PORT_NUM);
 
     int re = 0;
-    re = connect(sock, (struct sockaddr*)&servaddr, sizeof(servaddr));//¿¬°á ¿äÃ»
+    re = connect(sock, (struct sockaddr*)&servaddr, sizeof(servaddr));//ì—°ê²° ìš”ì²­
     if (re == -1) {
         return -1;
     }
@@ -36,14 +36,14 @@ int main()
     while (true) {
         //scanf("%s", msg);
         gets_s(msg, MAX_MSG_LEN);
-        send(sock, msg, strlen(msg), 0);//¼Û½Å
+        send(sock, msg, strlen(msg), 0);//ì†¡ì‹ 
         if (strcmp(msg, "exit") == 0) {
             break;
         }
     }
 
-    closesocket(sock);//¼ÒÄÏ ´İ±â
-    WSACleanup();//À©¼Ó ÇØÁ¦È­
+    closesocket(sock);//ì†Œì¼“ ë‹«ê¸°
+    WSACleanup();//ìœˆì† í•´ì œí™”
     return 0;
 }
 
@@ -63,4 +63,9 @@ void RecvThreadPoint(void* pin)
         }
     }
     closesocket(sock);
+}
+
+void Init()
+{
+
 }
