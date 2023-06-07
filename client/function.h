@@ -13,3 +13,4 @@
 
 IN_ADDR GetDefaultMyIP();
 void RecvThreadPoint(void*pin);
+void Init();
