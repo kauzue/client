@@ -1,16 +1,16 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 
 #include "function.h"
 #define PORT_NUM    1252
 #define MAX_MSG_LEN 256
 #define SERVER_IP "192.168.55.101"   //"192.168.55.101" 서버 IP 주소
-int exit = 0;
 
-int main()
-{
+int esc = 0;
+
+int main(){
     WSADATA wsadata;
     WSAStartup(MAKEWORD(2, 2), &wsadata);//윈속 초기화
-    
+
     //char server_ip[40] = "";
     //printf("서버 IP:");
     //gets_s(server_ip, sizeof(server_ip));
@@ -34,12 +34,12 @@ int main()
 
     _beginthread(RecvThreadPoint, 0, (void*)sock);
 
-    char msg[MAX_MSG_LEN] = "";
-    while (!exit) {
-        //scanf("%s", msg);
-        gets_s(msg, MAX_MSG_LEN);
+    char msg[MAX_MSG_LEN];
+    while (!esc) {
+        scanf("%s", msg);
+        //gets_s(msg, MAX_MSG_LEN);
         send(sock, msg, strlen(msg), 0);//송신
-        if (strcmp(msg, "exit") == 0) {
+        if (strcmp(msg, "esc") == 0) {
             break;
         }
     }
@@ -58,12 +58,12 @@ void RecvThreadPoint(void* pin)
     while (recv(sock, msg, MAX_MSG_LEN, 0)) {
         printf("%s", msg);
 
-        if (srtcmp(msg, "cls") == 0) {
+        if (strcmp(msg, "cls") == 0) {
             system("cls");
         }
 
-        if (strcmp(msg, "exit") == 0) {
-            exit = 1;
+        if (strcmp(msg, "esc") == 0) {
+            esc = 1;
         }
 
         if (strcmp(msg, "init") == 0) {
@@ -75,5 +75,5 @@ void RecvThreadPoint(void* pin)
 
 void Init()
 {
-    system("mode con cols = 514 lines = 416 | title Lodge Escape");
+    system("mode con cols=60 lines=40");
 }
