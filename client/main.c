@@ -65,6 +65,10 @@ void RecvThreadPoint(void* pin)
         if (strcmp(msg, "exit") == 0) {
             exit = 1;
         }
+
+        if (strcmp(msg, "exit") == 0) {
+            Init();
+        }
     }
     closesocket(sock);
 }
