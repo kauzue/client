@@ -66,7 +66,7 @@ void RecvThreadPoint(void* pin)
             exit = 1;
         }
 
-        if (strcmp(msg, "exit") == 0) {
+        if (strcmp(msg, "init") == 0) {
             Init();
         }
     }
