@@ -71,5 +71,5 @@ void RecvThreadPoint(void* pin)
 
 void Init()
 {
-
+    system("mode con cols = 514 lines = 416 | title Lodge Escape");
 }
