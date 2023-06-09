@@ -5,6 +5,7 @@
 #define MAX_MSG_LEN 256
 #define SERVER_IP "192.168.55.101"   //"192.168.55.101" 서버 IP 주소
 
+char msg[MAX_MSG_LEN] = "";
 int esc = 0;
 
 int main(){
@@ -34,10 +35,9 @@ int main(){
 
     _beginthread(RecvThreadPoint, 0, (void*)sock);
 
-    char msg[MAX_MSG_LEN];
     while (!esc) {
-        scanf("%s", msg);
-        //gets_s(msg, MAX_MSG_LEN);
+        //scanf("%s", msg);
+        gets_s(msg, MAX_MSG_LEN);
         send(sock, msg, strlen(msg), 0);//송신
         if (strcmp(msg, "esc") == 0) {
             break;
@@ -52,7 +52,6 @@ int main(){
 void RecvThreadPoint(void* pin)
 {
     SOCKET sock = (SOCKET)pin;
-    char msg[MAX_MSG_LEN];
     int result;
 
     while (recv(sock, msg, MAX_MSG_LEN, 0)) {
