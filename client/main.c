@@ -135,8 +135,7 @@ void DrawMain()
 
 int ControlKey()
 {
-    fflush(stdin);
-    char key = getchar();
+    int key = getchar();
 
     if (key == 224) {
         key = getchar();
