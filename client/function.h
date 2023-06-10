@@ -14,3 +14,5 @@
 IN_ADDR GetDefaultMyIP();
 void RecvThreadPoint(void*pin);
 void Init();
+void DrawMain();
+void MoveCursor(int x, int y);
