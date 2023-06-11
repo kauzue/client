@@ -3,12 +3,13 @@
 #include "function.h"
 #define PORT_NUM    1252
 #define MAX_MSG_LEN 256
-#define SERVER_IP "192.168.0.31"   //"192.168.55.101" 서버 IP 주소
-#define UP 0
-#define DOWN 1
-#define LEFT 2
-#define RIGHT 3
-#define ENTER 4
+#define SERVER_IP "192.168.55.101"   //"192.168.55.101" 서버 IP 주소
+#define NEW_GAME 0
+#define CONTINUE 2
+#define OPTION 4
+#define EXIT 6
+
+static enum KEY { UP, DOWN, LEFT, RIGHT, ENTER };
 
 char msg[MAX_MSG_LEN] = "";
 int esc = 0;
@@ -72,8 +73,14 @@ void RecvThreadPoint(void* pin)
             Init();
         }
 
-        if (strcmp(msg, "drawmain") == 0) {
-            DrawMain();
+        if (strcmp(msg, "menu") == 0) {
+            result = DrawMain();
+
+            switch (result) {
+            case NEW_GAME:
+                strcpy(msg, "start game");
+                send(sock, msg, MAX_MSG_LEN, 0);
+            }
         }
     }
     closesocket(sock);
@@ -84,50 +91,50 @@ void Init()
     system("mode con cols=60 lines=20 | title LodgeEscape");
 }
 
-void DrawMain()
+int DrawMain()
 {
-    int x = 23;
-    int y = 10;
     int esc = 1;
+    int x = 25;
+    int y = 10;
 
     system("cls");
 
-    MoveCursor(x, y);
+    MoveCursor(x - 2, y);
     printf("> New game");
 
-    MoveCursor(x + 2, y + 2);
+    MoveCursor(x, y + 2);
     printf("Continue");
 
-    MoveCursor(x + 2, y + 4);
+    MoveCursor(x, y + 4);
     printf("Option");
 
-    MoveCursor(x + 2, y + 6);
+    MoveCursor(x, y + 6);
     printf("Exit");
 
-    strcpy(msg, "pause");
-
-    while (esc) {
+    while (true) {
         int key = ControlKey();
 
         switch (key) {
         case UP:
-            if (y < 17) {
+            if (y > 10) {
                 MoveCursor(x - 2, y);
                 printf(" ");
-                MoveCursor(x - 2, y - 2);
+                MoveCursor(x - 2, y = y - 2);
                 printf(">");
             }
+            break;
 
         case DOWN:
-            if (y > 9) {
+            if (y < 16) {
                 MoveCursor(x - 2, y);
                 printf(" ");
-                MoveCursor(x - 2, y + 2);
+                MoveCursor(x - 2, y = y + 2);
                 printf(">");
             }
+            break;
 
         case ENTER:
-            esc = 0;
+            key = y - 10;
         }
 
     }
@@ -135,10 +142,10 @@ void DrawMain()
 
 int ControlKey()
 {
-    int key = getchar();
+    int key = getch();
 
     if (key == 224) {
-        key = getchar();
+        key = getch();
     }
 
     if (key == 'w' || key == 'W' || key == 72) {
@@ -157,7 +164,7 @@ int ControlKey()
         return RIGHT;
     }
 
-    if (key == ' ' || key == '\n') {
+    if (key == 13 || key == 32) {
         return ENTER;
     }
 }
