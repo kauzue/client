@@ -3,7 +3,7 @@
 #include "function.h"
 #define PORT_NUM    1252
 #define MAX_MSG_LEN 256
-#define SERVER_IP "snowlkz.kro.kr"   //"192.168.55.101" 서버 IP 주소, "218.235.54.179" 서버 IP 주소
+#define SERVER_IP "218.235.54.179"   //"192.168.55.101" 서버 IP 주소, "218.235.54.179" 서버 IP 주소
 #define NEW_GAME 0
 #define CONTINUE 2
 #define OPTION 4
