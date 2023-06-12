@@ -3,16 +3,20 @@
 #include "function.h"
 #define PORT_NUM    1252
 #define MAX_MSG_LEN 256
-#define SERVER_IP "218.235.54.179"   //"192.168.55.101" 서버 IP 주소, "218.235.54.179" 서버 IP 주소
+#define SERVER_IP "192.168.55.101"   //"192.168.55.101" 서버 IP 주소, "218.235.54.179" 서버 IP 주소
 #define NEW_GAME 0
 #define CONTINUE 2
 #define OPTION 4
-#define EXIT 6
+#define CHAPTER 6
+#define ENDING 8
+#define EXIT 10
 
 static enum KEY { UP, DOWN, LEFT, RIGHT, ENTER };
 
 char msg[MAX_MSG_LEN] = "";
 int esc = 0;
+int chapter = 0;
+int ending = 0;
 
 int main(){
     WSADATA wsadata;
@@ -80,6 +84,30 @@ void RecvThreadPoint(void* pin)
             case NEW_GAME:
                 strcpy(msg, "start game");
                 send(sock, msg, MAX_MSG_LEN, 0);
+                break;
+
+            case CONTINUE:
+                strcpy(msg, "continue");
+                send(sock, msg, MAX_MSG_LEN, 0);
+                break;
+
+            case OPTION:
+                strcpy(msg, "option");
+                send(sock, msg, MAX_MSG_LEN, 0);
+                break;
+
+            case CHAPTER:
+                strcpy(msg, "chapter");
+                send(sock, msg, MAX_MSG_LEN, 0);
+                break;
+
+            case ENDING:
+                strcpy(msg, "ending");
+                send(sock, msg, MAX_MSG_LEN, 0);
+                break;
+
+            case EXIT:
+                strcpy(msg, "esc");
             }
         }
     }
@@ -95,7 +123,7 @@ int DrawMain()
 {
     int esc = 1;
     int x = 25;
-    int y = 10;
+    int y = 6;
 
     system("cls");
 
@@ -109,14 +137,27 @@ int DrawMain()
     printf("Option");
 
     MoveCursor(x, y + 6);
-    printf("Exit");
+    printf("Chapter");
+
+    if (ending != 0) {
+        MoveCursor(x, y + 8);
+        printf("Ending");
+
+        MoveCursor(x, y + 10);
+        printf("Exit");
+    }
+
+    else {
+        MoveCursor(x, y + 8);
+        printf("Exit");
+    }
 
     while (true) {
         int key = ControlKey();
 
         switch (key) {
         case UP:
-            if (y > 10) {
+            if (y > 6) {
                 MoveCursor(x - 2, y);
                 printf(" ");
                 MoveCursor(x - 2, y = y - 2);
@@ -126,15 +167,24 @@ int DrawMain()
 
         case DOWN:
             if (y < 16) {
-                MoveCursor(x - 2, y);
-                printf(" ");
-                MoveCursor(x - 2, y = y + 2);
-                printf(">");
+                if (ending != 0 || y != 14) {
+                    MoveCursor(x - 2, y);
+                    printf(" ");
+
+                    MoveCursor(x - 2, y = y + 2);
+                    printf(">");
+                }
             }
             break;
 
         case ENTER:
-            key = y - 10;
+            if (ending == 0 && y == 14) {
+                key = y - 4;
+            }
+            else {
+                key = y - 6;
+            }
+            return;
         }
 
     }
