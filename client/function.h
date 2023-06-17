@@ -1,18 +1,15 @@
 #pragma once
-#include <WinSock2.h>
-#include <Windows.h>
-#include <process.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <malloc.h>
-#include <stdbool.h>
-
-#pragma comment(lib,"ws2_32")
 #pragma warning(disable:4996)
 
+#define MAX_MSG_LEN 256
+
+#include <WinSock2.h>
+#include <stdbool.h>
+
+enum KEY { UP, DOWN, LEFT, RIGHT, ENTER };
+
 IN_ADDR GetDefaultMyIP();
-void RecvThreadPoint(void*pin);
 void Init();
-int DrawMain();
+int DrawMain(int ending);
+int ControlKey();
 void MoveCursor(int x, int y);

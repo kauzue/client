@@ -1,22 +1,12 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 
+#include "main.h"
+#include "game.h"
 #include "function.h"
-#define PORT_NUM    1252
-#define MAX_MSG_LEN 256
-#define SERVER_IP "192.168.55.101"   //"192.168.55.101" 서버 IP 주소, "218.235.54.179" 서버 IP 주소
-#define NEW_GAME 0
-#define CONTINUE 2
-#define OPTION 4
-#define CHAPTER 6
-#define ENDING 8
-#define EXIT 10
 
-static enum KEY { UP, DOWN, LEFT, RIGHT, ENTER };
-
-char msg[MAX_MSG_LEN] = "";
-int esc = 0;
 int chapter = 0;
 int ending = 0;
+char msg[MAX_MSG_LEN] = "";
 
 int main(){
     WSADATA wsadata;
@@ -43,7 +33,9 @@ int main(){
         return -1;
     }
 
-    _beginthread(RecvThreadPoint, 0, (void*)sock);
+    int esc = 0;
+
+    _beginthread(RecvThreadPoint, 0, (void*)sock, esc);
 
     while (strcmp(msg, "esc") != 0) {
         while (strcmp(msg, "선택: ") == 0) {
@@ -57,28 +49,26 @@ int main(){
     return 0;
 }
 
-void RecvThreadPoint(void* pin)
+void RecvThreadPoint(void* pin, int esc)
 {
     SOCKET sock = (SOCKET)pin;
     int result;
 
     while (recv(sock, msg, MAX_MSG_LEN, 0)) {
-        printf("%s", msg);
-
         if (strcmp(msg, "cls") == 0) {
             system("cls");
         }
 
-        if (strcmp(msg, "esc") == 0) {
+        else if (strcmp(msg, "esc") == 0) {
             esc = 1;
         }
 
-        if (strcmp(msg, "init") == 0) {
+        else if (strcmp(msg, "init") == 0) {
             Init();
         }
 
-        if (strcmp(msg, "menu") == 0) {
-            result = DrawMain();
+        else if (strcmp(msg, "menu") == 0) {
+            result = DrawMain(ending);
 
             switch (result) {
             case NEW_GAME:
@@ -92,8 +82,16 @@ void RecvThreadPoint(void* pin)
                 break;
 
             case OPTION:
-                strcpy(msg, "option");
-                send(sock, msg, MAX_MSG_LEN, 0);
+                result = Option();
+                switch (result) {
+                login_data:
+                    strcpy(msg, "login data");
+                    send(sock, msg, MAX_MSG_LEN, 0);
+
+                logout:
+                    strcpy(msg, "logout");
+                    send(sock, msg, MAX_MSG_LEN, 0);
+                }
                 break;
 
             case CHAPTER:
@@ -110,120 +108,14 @@ void RecvThreadPoint(void* pin)
                 strcpy(msg, "esc");
             }
         }
-    }
-    closesocket(sock);
-}
 
-void Init()
-{
-    system("mode con cols=60 lines=20 | title LodgeEscape");
-}
-
-int DrawMain()
-{
-    int esc = 1;
-    int x = 25;
-    int y = 6;
-
-    system("cls");
-
-    MoveCursor(x - 2, y);
-    printf("> New game");
-
-    MoveCursor(x, y + 2);
-    printf("Continue");
-
-    MoveCursor(x, y + 4);
-    printf("Option");
-
-    MoveCursor(x, y + 6);
-    printf("Chapter");
-
-    if (ending != 0) {
-        MoveCursor(x, y + 8);
-        printf("Ending");
-
-        MoveCursor(x, y + 10);
-        printf("Exit");
-    }
-
-    else {
-        MoveCursor(x, y + 8);
-        printf("Exit");
-    }
-
-    while (true) {
-        int key = ControlKey();
-
-        switch (key) {
-        case UP:
-            if (y > 6) {
-                MoveCursor(x - 2, y);
-                printf(" ");
-                MoveCursor(x - 2, y = y - 2);
-                printf(">");
-            }
-            break;
-
-        case DOWN:
-            if (y < 16) {
-                if (ending != 0 || y != 14) {
-                    MoveCursor(x - 2, y);
-                    printf(" ");
-
-                    MoveCursor(x - 2, y = y + 2);
-                    printf(">");
-                }
-            }
-            break;
-
-        case ENTER:
-            if (ending == 0 && y == 14) {
-                key = y - 4;
-            }
-            else {
-                key = y - 6;
-            }
-            return;
+        else if (strcmp(msg, "player1") == 0) {
+            StartPlayer1();
         }
 
+        else {
+        printf("%s", msg);
+        }
     }
-}
-
-int ControlKey()
-{
-    int key = getch();
-
-    if (key == 224) {
-        key = getch();
-    }
-
-    if (key == 'w' || key == 'W' || key == 72) {
-        return UP;
-    }
-
-    if (key == 's' || key == 'S' || key == 80) {
-        return DOWN;
-    }
-
-    if (key == 'a' || key == 'A' || key == 75) {
-        return LEFT;
-    }
-
-    if (key == 'd' || key == 'D' || key == 77) {
-        return RIGHT;
-    }
-
-    if (key == 13 || key == 32) {
-        return ENTER;
-    }
-}
-
-void MoveCursor(int x, int y)
-{
-    HANDLE consolehandle = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD pos;
-    pos.X = x;
-    pos.Y = y;
-    SetConsoleCursorPosition(consolehandle, pos);
+    closesocket(sock);
 }
