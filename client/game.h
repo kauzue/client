@@ -1,6 +1,6 @@
 #pragma once
 
-enum Option {login_data, logout};
+enum Option {LOGIN_DATA, LOGOUT};
 
 void StartPlayer1();
 int Option();

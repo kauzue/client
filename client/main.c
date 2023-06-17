@@ -67,6 +67,10 @@ void RecvThreadPoint(void* pin, int esc)
             Init();
         }
 
+        else if (strcmp(msg, "pause") == 0) {
+            system("pause");
+        }
+
         else if (strcmp(msg, "menu") == 0) {
             result = DrawMain(ending);
 
@@ -84,13 +88,16 @@ void RecvThreadPoint(void* pin, int esc)
             case OPTION:
                 result = Option();
                 switch (result) {
-                login_data:
+                case LOGIN_DATA:
                     strcpy(msg, "login data");
                     send(sock, msg, MAX_MSG_LEN, 0);
+                    break;
 
-                logout:
+                case LOGOUT:
                     strcpy(msg, "logout");
                     send(sock, msg, MAX_MSG_LEN, 0);
+                    break;
+
                 }
                 break;
 

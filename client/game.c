@@ -87,7 +87,7 @@ int Option()
 
         case ENTER:
             system("cls");
-            return y + 1;
+            return y;
         }
     }
 }
