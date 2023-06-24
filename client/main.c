@@ -4,7 +4,8 @@
 #include "game.h"
 #include "function.h"
 
-int chapter = 0;
+int stage;
+int chapter;
 int ending = 0;
 char msg[MAX_MSG_LEN] = "";
 
@@ -86,19 +87,7 @@ void RecvThreadPoint(void* pin, int esc)
                 break;
 
             case OPTION:
-                result = Option();
-                switch (result) {
-                case LOGIN_DATA:
-                    strcpy(msg, "login data");
-                    send(sock, msg, MAX_MSG_LEN, 0);
-                    break;
-
-                case LOGOUT:
-                    strcpy(msg, "logout");
-                    send(sock, msg, MAX_MSG_LEN, 0);
-                    break;
-
-                }
+                Option_Menu(sock);
                 break;
 
             case CHAPTER:
@@ -117,7 +106,82 @@ void RecvThreadPoint(void* pin, int esc)
         }
 
         else if (strcmp(msg, "player1") == 0) {
-            StartPlayer1();
+            recv(sock, msg, MAX_MSG_LEN, 0);
+            chapter = atoi(msg);
+
+            recv(sock, msg, MAX_MSG_LEN, 0);
+            stage = atoi(msg);
+
+            int choice;
+            while (true) {
+                switch (chapter) {
+                case 1: {
+                    choice = Player1_Chapter1(stage);
+
+                    switch (choice) {
+                    case 1: {
+                        printf("내가 지니고 있던 가방 안에는 지갑, 수첩이 있다. \n");
+                        stage++;
+                        system("pause");
+                        break;
+                    }
+
+                    case 2: {
+                        system("cls");
+                        choice = Menu();
+
+                        switch (choice) {
+                        case M_ITEM: {
+
+                        }
+
+                        case M_SAVE: {
+
+                        }
+
+                        case M_CONTINUE: {
+
+                        }
+
+                        case M_OPTION: {
+                            Option_Menu(sock);
+                        }
+
+                        case M_EXIT: {
+
+                        }
+                        }
+                        break;
+                    }
+                    }
+                    break;
+                }
+
+                case 2: {
+                    choice = Player1_Chapter1(stage);
+
+                    switch (choice) {
+                    case 1: {
+                        printf("내가 지니고 있던 가방 안에는 지갑, 수첩이 있다. \n");
+                        stage++;
+                        system("pause");
+                        break;
+                    }
+
+                    case 2: {
+                        printf("2");
+                        break;
+                    }
+
+                    case 3: {
+                        printf("3");
+                        break;
+                    }
+                    }
+                    break;
+                }
+                }
+            }
         }
 
         else {

@@ -10,7 +10,7 @@
 #pragma comment(lib,"ws2_32")
 
 #define PORT_NUM    1252
-#define SERVER_IP "192.168.163.1"   //"192.168.55.101" 辑滚 IP 林家, "218.235.54.179" 辑滚 IP 林家
+#define SERVER_IP "192.168.0.47"   //"192.168.55.101" 辑滚 IP 林家, "218.235.54.179" 辑滚 IP 林家
 #define NEW_GAME 0
 #define CONTINUE 2
 #define OPTION 4

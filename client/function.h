@@ -13,3 +13,4 @@ void Init();
 int DrawMain(int ending);
 int ControlKey();
 void MoveCursor(int x, int y);
+void Option_Menu(sock);

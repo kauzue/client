@@ -1,4 +1,5 @@
 #include "function.h"
+#include "game.h"
 
 IN_ADDR GetDefaultMyIP()
 {
@@ -136,4 +137,21 @@ void MoveCursor(int x, int y)
     pos.X = x;
     pos.Y = y;
     SetConsoleCursorPosition(consolehandle, pos);
+}
+
+void Option_Menu(SOCKET sock) {
+    char msg[MAX_MSG_LEN] = "";
+    int result = Option();
+
+    switch (result) {
+    case O_LOGIN_DATA:
+        strcpy(msg, "login data");
+        send(sock, msg, MAX_MSG_LEN, 0);
+        break;
+
+    case O_LOGOUT:
+        strcpy(msg, "logout");
+        send(sock, msg, MAX_MSG_LEN, 0);
+        break;
+    }
 }
